@@ -1,0 +1,36 @@
+version: "3.0"
+
+services:
+
+  mysql:
+    image: mysql:8.0
+    command: --default-authentication-plugin=mysql_native_password
+    ports:
+      - 3306:3306
+    volumes:
+      - ./data:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=toor
+      - MYSQL_DATABASE=api
+
+  app:
+    # image: php:7.4.27-apache-buster
+    build: .
+    ports:
+      - 8080:80
+    environment:
+      - DB_HOST=mysql
+      - DB_USER=root
+      - DB_PASS=toor
+      - DB_NAME=api
+    volumes:
+      - ./api:/var/www/html/api
+
+  myadmin:
+    image: phpmyadmin:5
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=toor
+      - PMA_HOST=mysql
+    ports:
+      - 8082:80
